@@ -1,20 +1,19 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  type Entry,
-  addEntry,
-  readEntry,
-  removeEntry,
-  updateEntry,
-} from '../data';
+type Params = {
+  addEntry: (Entry: Entry) => Promise<void>;
+  modifyEntry: (Entry: Entry) => Promise<void>;
+  removeEntry: (EntryId: number) => void;
+};
 
+import { type Entry, readEntry } from '../data';
 /**
  * Form that adds or edits an entry.
  * Gets `entryId` from route.
  * If `entryId` === 'new' then creates a new entry.
  * Otherwise reads the entry and edits it.
  */
-export function EntryForm() {
+export function EntryForm({ addEntry, modifyEntry, removeEntry }: Params) {
   const { entryId } = useParams();
   const [entry, setEntry] = useState<Entry>();
   const [photoUrl, setPhotoUrl] = useState<string>();
@@ -39,14 +38,14 @@ export function EntryForm() {
       }
     }
     if (isEditing) load(+entryId);
-  }, [entryId]);
+  }, [entryId, isEditing]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const newEntry = Object.fromEntries(formData) as unknown as Entry;
     if (isEditing) {
-      updateEntry({ ...entry, ...newEntry });
+      modifyEntry({ ...entry, ...newEntry });
     } else {
       addEntry(newEntry);
     }
