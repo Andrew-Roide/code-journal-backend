@@ -23,11 +23,27 @@ app.get('/api/entries', async (req, res, next) => {
     const sql = `
       select *
         from "entries"
-        order by "entryId"
+        order by "entryId" desc
     `;
 
     const getAllEntries = await db.query(sql);
     res.json(getAllEntries.rows);
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/api/entries/:entryId', async (req, res, next) => {
+  try {
+    const entryId = Number(req.params.entryId);
+    const sql = `
+      select *
+        from "entries"
+        where "entryId"=$1
+    `;
+    const params = [entryId];
+    const getEntry = await db.query(sql, params);
+    res.json(getEntry.rows[0]);
   } catch (err) {
     next(err);
   }

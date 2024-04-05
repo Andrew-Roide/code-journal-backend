@@ -5,7 +5,7 @@ import { Entry, readEntries } from '../data';
 
 export function EntryList() {
   const [entries, setEntries] = useState<Entry[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<unknown>();
 
   useEffect(() => {
